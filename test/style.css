@@ -1,0 +1,86 @@
+body {
+  background: #f3f3f3;
+  font-family: "Architects Daughter", cursive;
+  padding: 20px;
+  height: 100vh;
+}
+.container {
+  height: 100%;
+}
+.hidden {
+  display: none;
+}
+.main-header {
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+.buttons {
+  text-align: right;
+}
+button {
+  padding: 5px 10px;
+  background: rgb(192, 212, 212);
+}
+.editTaskContainer,
+.newTask {
+  border: 1px solid lightgrey;
+  padding: 10px;
+  margin: 20px 0;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+}
+form * {
+  padding: 5px 0;
+}
+.theList {
+  margin-top: 30px;
+  padding: 20px;
+  border-style: outset;
+  /* height: 100%; */
+  display: flex;
+  flex-wrap: wrap;
+}
+hr {
+  margin-top: 10px;
+}
+.task {
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid lightgrey;
+}
+.task p,
+.task span {
+  line-height: 2rem;
+}
+.task span {
+  font-size: 2rem;
+  padding-left: 15px;
+}
+.task p {
+  font-weight: bold;
+}
+.taskData {
+  margin-top: 20px;
+}
+
+[data-priority="low"] {
+  color: blue;
+}
+[data-priority="medium"] {
+  color: orange;
+}
+[data-priority="high"] {
+  color: red;
+}
+input[type="checkbox"] {
+  transform: scale(1.25);
+}
+input[type="checkbox"]:checked ~ * {
+  text-decoration: line-through grey;
+}

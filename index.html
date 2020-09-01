@@ -7,104 +7,27 @@
       href="https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap"
       rel="stylesheet"
     />
-    <link
-      rel="stylesheet"
-      href="
-    ./my-normalize.css"
-    />
+    <link rel="stylesheet" href="./my-normalize.css" />
     <link rel="stylesheet" href="./style.css" />
-    <title>My ToDo List</title>
+
+    <title>whatToDoApp</title>
   </head>
   <body>
     <div class="container">
-      <header class="main-header">
-        <h1>My ToDo List</h1>
-        <div class="buttons">
-          <button type="button" class="addNew">Add New</button>
-          <button type="button" class="deleteAll">Delete All</button>
-          <button type="button" class="deleteCompleted">
-            Delete Completed Tasks
-          </button>
+      <h1>My ToDo List</h1>
+      <div class="buttons">
+        <button type="button" class="deleteAll">Delete All</button>
+        <button type="button" class="deleteCompleted">
+          Delete Completed Tasks
+        </button>
       </div>
-      </header>
-      
-      <div class="newTask" hidden>
-        <form name="addNewTaskForm">
+      <div class="theList">
+        <div class="newTask">
           <label for="taskContent">New Task Content:</label>
-          <textarea id="textArea" name="textArea"> </textarea>
-          <label for="taskPriority">New Task Priority:</label>
-          <div>
-            <input type="radio" id="low" name="priority" value="low" checked />
-            <label for="low">Low</label>
-            <input type="radio" id="medium" name="priority" value="medium" />
-            <label for="medium">Medium</label>
-            <input type="radio" id="high" name="priority" value="high" />
-            <label for="high">High</label>
-          </div>
-          <button type="button" class="save" value="Save">Save</button>
-          
-        </form>
+          <input type="text" name="newTaskField" id="newTaskField" />
+          <button type="button" class="save">Save</button>
+        </div>
       </div>
-      <div class="theList">What?! Nothing To Do?!
-        <!-- <div class="editTaskContainer">
-          <form name="editNewTaskForm">
-            <label for="taskContent">New Task Content:</label>
-            <textarea id="textArea" name="textArea"> </textarea>
-            <label for="taskPriority">New Task Priority:</label>
-            <div>
-              <input
-                type="radio"
-                id="low"
-                name="priority"
-                value="low"
-                checked
-              />
-              <label for="low">Low</label>
-              <input type="radio" id="medium" name="priority" value="medium" />
-              <label for="medium">Medium</label>
-              <input type="radio" id="high" name="priority" value="high" />
-              <label for="high">High</label>
-            </div>
-            <input type="button" class="save" value="Save" />
-          </form>
-        </div>
-        <div class="task">
-          <input type="checkbox" name="task" />
-          <span>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Minus,
-            laboriosam.
-          </span>
-          <div>
-            <p class="priority" data-priority="high">TaskPriority: High</p>
-            <p class="date" data-date="date">Creation Date: 31-08-2020</p>
-          </div>
-          <button type="button" class="editTask">Edit Task</button>
-        </div>
-        <div class="task">
-          <input type="checkbox" name="task" />
-          <span>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Minus,
-            laboriosam.
-          </span>
-          <div>
-            <p class="priority" data-priority="high">TaskPriority: High</p>
-            <p class="date" data-date="date">Creation Date: 31-08-2020</p>
-          </div>
-          <button type="button" class="editTask">Edit Task</button>
-        </div>
-        <div class="task">
-          <input type="checkbox" name="task" />
-          <span>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Minus,
-            laboriosam.
-          </span>
-          <div>
-            <p class="priority" data-priority="high">TaskPriority: High</p>
-            <p class="date" data-date="date">Creation Date: 31-08-2020</p>
-          </div>
-          <button type="button" class="editTask">Edit Task</button>
-        </div>
-      </div> -->
     </div>
     <script src="./index.js"></script>
   </body>

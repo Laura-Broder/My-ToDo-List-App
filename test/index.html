@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="
+    ./my-normalize.css"
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <title>My ToDo List</title>
+  </head>
+  <body>
+    <div class="container">
+      <header class="main-header">
+        <h1>My ToDo List</h1>
+        <div class="buttons">
+          <button type="button" class="addNew">Add New</button>
+          <button type="button" class="deleteAll">Delete All</button>
+          <button type="button" class="deleteCompleted">
+            Delete Completed Tasks
+          </button>
+      </div>
+      </header>
+      
+      <div class="newTask" hidden>
+        <form name="addNewTaskForm">
+          <label for="taskContent">New Task Content:</label>
+          <textarea id="textArea" name="textArea"> </textarea>
+          <label for="taskPriority">New Task Priority:</label>
+          <div>
+            <input type="radio" id="low" name="priority" value="low" checked />
+            <label for="low">Low</label>
+            <input type="radio" id="medium" name="priority" value="medium" />
+            <label for="medium">Medium</label>
+            <input type="radio" id="high" name="priority" value="high" />
+            <label for="high">High</label>
+          </div>
+          <button type="button" class="save" value="Save">Save</button>
+          
+        </form>
+      </div>
+      <div class="theList">What?! Nothing To Do?!
+
+    </div>
+    <script src="./index.js"></script>
+  </body>
+</html>

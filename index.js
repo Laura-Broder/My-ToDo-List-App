@@ -1,105 +1,189 @@
-const addButton = document.querySelector(".addNew");
-const deleteButton = document.querySelector(".deleteAll");
+// select elements
+const saveBtn = document.querySelector(".save");
 const theList = document.querySelector(".theList");
-const saveButton = document.querySelector(".save");
-const deleteCompletedButton = document.querySelector(".deleteCompleted");
-const editTaskButtonsList = document.querySelectorAll(".editTask");
-let tasksArray = theList.children;
-console.log(tasksArray);
-
-function createTaskObj(taskForm) {
-  let d = new Date();
-  let taskObj = {};
-  taskObj.taskContent = taskForm.textArea.value;
-  taskObj.taskPriority = taskForm.querySelector(
-    'input[type="radio"]:checked',
-  ).value;
-  taskObj.creationDate = d.toLocaleDateString("en-GB");
-
-  taskObj.taskHTML = `<div class="task">
-          <input type="checkbox" name="task"/>
-          <span>
-            ${taskObj.taskContent}
-          </span>
-          <div>
-            <p class="priority" data-priority="${taskObj.taskPriority}">Task Priority: ${taskObj.taskPriority}</p>
-            <p class="date" data-date="date">Creation Date: ${taskObj.creationDate}</p>
-          </div>
-          <button type="button" class="editTask">Edit Task</button>
-        <hr>
-        </div>`;
-
-  // taskObj.editTask = function () {
-  //   const editTaskFormHTML = `<div class="editTaskContainer">
-  //         <form name="editNewTaskForm">
-  //           <label for="taskContent">New Task Content:</label>
-  //           <textarea id="textArea" name="textArea">${this.taskContent} </textarea>
-  //           <label for="taskPriority">New Task Priority:</label>
-  //           <div>
-  //             <input
-  //               type="radio"
-  //               id="low"
-  //               name="priority"
-  //               value="low"
-  //               checked
-  //             />
-  //             <label for="low">Low</label>
-  //             <input type="radio" id="medium" name="priority" value="medium" />
-  //             <label for="medium">Medium</label>
-  //             <input type="radio" id="high" name="priority" value="high" />
-  //             <label for="high">High</label>
-  //           </div>
-  //           <input type="button" class="save" value="Save" />
-  //         </form>
-  //       </div>`;
-  //   this.insertAdjacentHTML("beforebegin", editTaskFormHTML);
-  // };
-  return taskObj;
+// ----------------------------------------------------------------
+// data list
+// retrieve and display all the saved tasks
+const tasksArray = retrieveLocalStorage();
+tasksArray.forEach((taskObj) => {
+  displayTask(taskObj);
+});
+// ----------------------------------------------------------------
+// retrieve local storage
+function retrieveLocalStorage() {
+  let savedTasksArray = [];
+  for (let i = 0; i < localStorage.length; i++)
+    savedTasksArray.push(JSON.parse(localStorage.getItem(localStorage.key(i))));
+  return savedTasksArray;
 }
-function addTaskToList(taskObj) {
-  theList.insertAdjacentHTML("beforeend", taskObj.taskHTML);
-  console.log(tasksArray);
-}
-function clearForm(taskForm) {
-  taskForm.textArea.value = "";
-  taskForm.querySelector('input[type="radio"][id="low"]').checked = true;
-  document.querySelector(".newTask").hidden = true;
-}
-function handleAddClick() {
-  if (document.querySelector(".newTask").hidden) {
-    document.querySelector(".newTask").hidden = false;
+// update local storage
+function updateLocalStorage(taskObj) {
+  if (typeof Storage !== "undefined") {
+    localStorage.setItem(JSON.stringify(taskObj.taskID), "");
+    localStorage.setItem(
+      JSON.stringify(taskObj.taskID),
+      JSON.stringify(taskObj),
+    );
+  } else {
+    console.log("Sorry, your browser does not support Web Storage...");
   }
 }
-function handleDeleteClick() {
-  theList.innerHTML = "All Done Here!!!";
-}
-function handleSaveClick() {
-  const newTaskForm = document.querySelector('[name="addNewTaskForm"');
-  const taskToAdd = createTaskObj(newTaskForm);
-  if (tasksArray.length === 0) theList.innerHTML = "";
-  if (!(taskToAdd.taskContent === "")) {
-    addTaskToList(taskToAdd);
-    clearForm(newTaskForm);
+// clear local storage
+function clearLocalStorage() {
+  if (typeof Storage !== "undefined") {
+    localStorage.clear();
+  } else {
+    console.log("Sorry, your browser does not support Web Storage...");
   }
 }
-function handleDeleteCompletedClick() {
-  document.querySelector('input[type="checkbox"]:checked') &&
-    document
-      .querySelectorAll('input[type="checkbox"]:checked')
-      .forEach((completedTask) => completedTask.parentElement.remove());
-
-  if (tasksArray.length === 0) theList.innerHTML = "All Done Here!!!";
+// delete item from local storage
+function deleteFromLocalStorage(taskObj) {
+  if (typeof Storage !== "undefined") {
+    localStorage.removeItem(JSON.stringify(taskObj.taskID));
+  } else {
+    console.log("Sorry, your browser does not support Web Storage...");
+  }
 }
-function handleEditTaskButtonClick(event) {
-  console.log(event.currentTarget.parentElement);
-  event.currentTarget.parentElement.editTask();
+// ----------------------------------------------------------------
+// create new task
+function createNewTask() {
+  const newTaskContent = document.querySelector("#newTaskField").value;
+  const taskObj = {
+    content: newTaskContent,
+    // !- check if id is uniq -!
+    taskID: Math.floor(Math.random() * 10000),
+    date: Date.now(),
+    completed: false,
+  };
+  tasksArray.push(taskObj);
+  updateLocalStorage(taskObj);
+  displayTask(taskObj);
+}
+// update the task obj
+function updateTaskObj(taskEl) {
+  const taskObjIndex = returnTaskObjIndex(taskEl);
+  const newContent = taskEl.querySelector(".editField").value;
+  tasksArray[taskObjIndex].content = newContent;
+  return tasksArray[taskObjIndex];
+}
+// delete a task
+function deleteTask(taskObj) {
+  taskObjIndex = tasksArray.findIndex((task) => task.taskID === taskObj.taskID);
+  tasksArray.splice(taskObjIndex, 1);
+
+  deleteFromLocalStorage(taskObj);
+}
+// find task in the array and return the task object
+function returnTaskObj(taskEl) {
+  return tasksArray.find(
+    (task) => task.taskID === Number(taskEl.getAttribute("data-id")),
+  );
+}
+// find task in the array and return the index
+function returnTaskObjIndex(taskEl) {
+  return tasksArray.findIndex(
+    (task) => task.taskID === Number(taskEl.getAttribute("data-id")),
+  );
 }
 
-// add event listeners to the buttons
-addButton.addEventListener("click", handleAddClick);
-deleteButton.addEventListener("click", handleDeleteClick);
-saveButton.addEventListener("click", handleSaveClick);
-deleteCompletedButton.addEventListener("click", handleDeleteCompletedClick);
-editTaskButtonsList.forEach((btn) =>
-  btn.addEventListener("click", handleEditTaskButtonClick),
-);
+// ----------------------------------------------------------------
+// display edit task field
+function displayEditTask(taskEl) {
+  taskEl.querySelector(".saveChangesBtn").hidden = false;
+  taskEl.querySelector(".editField").hidden = false;
+  taskEl.querySelector(".editBtn").hidden = true;
+  taskEl.querySelector(".completeBtn").hidden = true;
+  taskEl.querySelector(".taskContent").hidden = true;
+}
+// display a task
+function displayTask(taskObj) {
+  const task = document.createElement("div");
+  task.classList.add("task");
+  task.setAttribute("data-id", taskObj.taskID);
+
+  const taskContent = document.createElement("p");
+  taskContent.classList.add("taskContent");
+  taskContent.innerHTML = taskObj.content;
+
+  const editField = document.createElement("input");
+  editField.setAttribute("type", "text");
+  editField.classList.add("editField");
+  editField.value = taskObj.content;
+  editField.hidden = true;
+
+  // const buttonsContainer = document.createElement("div");
+  // buttonsContainer.classList.add("buttonsContainer");
+
+  const deleteBtn = createBtn("deleteBtn", "Delete");
+  const completeBtn = createBtn("completeBtn", "Complete");
+  const editBtn = createBtn("editBtn", "Edit");
+  const saveChangesBtn = createBtn("saveChangesBtn", "Save Changes");
+  saveChangesBtn.hidden = true;
+
+  task.appendChild(taskContent);
+  task.appendChild(editField);
+  task.appendChild(deleteBtn);
+  task.appendChild(editBtn);
+  task.appendChild(completeBtn);
+  task.appendChild(saveChangesBtn);
+  theList.appendChild(task);
+
+  // event listeners
+  deleteBtn.addEventListener("click", handleDeleteClick);
+  completeBtn.addEventListener("click", handleCompleteClick);
+  // !- replace edit button with dbclick -!
+  editBtn.addEventListener("click", handleEditClick);
+  saveChangesBtn.addEventListener("click", handleSaveChangesClick);
+}
+// create a button
+function createBtn(name, innerText) {
+  const btn = document.createElement("button");
+  btn.classList.add("btn", name);
+  btn.innerHTML = innerText;
+  return btn;
+}
+
+function updateTaskElement(taskEl, taskObj) {
+  taskEl.querySelector(".taskContent").innerHTML = taskObj.content;
+  taskEl.querySelector(".saveChangesBtn").hidden = true;
+  taskEl.querySelector(".editField").hidden = true;
+  taskEl.querySelector(".editBtn").hidden = false;
+  taskEl.querySelector(".completeBtn").hidden = false;
+  taskEl.querySelector(".taskContent").hidden = false;
+}
+// ----------------------------------------------------------------
+// handle clicks
+function handleDeleteClick(event) {
+  const taskEl = event.currentTarget.parentElement;
+  const taskObj = returnTaskObj(taskEl);
+  deleteTask(taskObj);
+  taskEl.remove();
+}
+function handleCompleteClick(event) {
+  const taskEl = event.currentTarget.parentElement;
+  const taskObjIndex = returnTaskObjIndex(taskEl);
+  // !- bug! doesn't save the completed info
+  if (!tasksArray[taskObjIndex].completed) {
+    taskEl.classList.add("complete");
+    tasksArray[taskObjIndex].completed = true;
+  } else {
+    taskEl.classList.remove("complete");
+    tasksArray[taskObjIndex].completed = false;
+  }
+}
+function handleEditClick(event) {
+  const taskEl = event.currentTarget.parentElement;
+  displayEditTask(taskEl);
+}
+function handleSaveChangesClick(event) {
+  const taskEl = event.currentTarget.parentElement;
+  const taskObj = updateTaskObj(taskEl);
+  updateLocalStorage(taskObj);
+  updateTaskElement(taskEl, taskObj);
+}
+
+// add eventListener to save btn
+saveBtn.addEventListener("click", createNewTask);
+// add events to the buttons:
+// deleteAll
+// Delete Completed Tasks

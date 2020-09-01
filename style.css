@@ -1,0 +1,77 @@
+body {
+  background: #f3f3f3;
+  font-family: "Architects Daughter", cursive;
+  padding: 20px;
+}
+
+.hidden {
+  display: none;
+}
+.main-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+.buttons {
+  text-align: right;
+}
+button {
+  padding: 5px 10px;
+  background: rgb(192, 212, 212);
+}
+.editTaskContainer,
+.newTask {
+  border: 1px solid lightgrey;
+  padding: 10px;
+  margin: 20px 0;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+}
+form * {
+  padding: 5px 0;
+}
+.theList {
+  margin-top: 30px;
+  padding: 5px 50px;
+  border-style: outset;
+  min-height: 300px;
+}
+hr {
+  margin-top: 10px;
+}
+.task {
+  /* text-decoration: underline lightgrey; */
+  display: block;
+  margin-bottom: 10px;
+}
+.task p,
+.task span {
+  line-height: 2rem;
+}
+.task span {
+  font-size: 2rem;
+  padding-left: 10px;
+}
+.task p {
+  font-weight: bold;
+}
+
+[data-priority="low"] {
+  color: blue;
+}
+[data-priority="medium"] {
+  color: orange;
+}
+[data-priority="high"] {
+  color: red;
+}
+input[type="checkbox"] {
+  transform: scale(1.25);
+}
+input[type="checkbox"]:checked ~ * {
+  text-decoration: line-through grey;
+}

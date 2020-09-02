@@ -12,20 +12,33 @@ button {
   margin-top: 30px;
   padding: 20px;
   border-style: outset;
-  display: flex;
-  flex-wrap: wrap;
+  /* display: flex; */
+  /* flex-wrap: wrap; */
 }
 .newTask,
 .task {
   margin: 10px;
   padding: 10px;
   border: 1px solid lightgrey;
-  text-align: center;
+  /* text-align: center; */
   /* min-height: 100px; */
-  display: flex;
-  align-items: center;
+  /* display: flex; */
+  /* align-items: center; */
   /* flex-direction: column; */
 }
-.complete {
+
+input[type="text"] {
+  padding: 4px;
+}
+.taskContent,
+.editField {
+  margin-bottom: 1rem;
+  overflow-wrap: normal;
+}
+.input-container {
+  margin-top: 1rem;
+}
+
+[data-completed="true"] {
   text-decoration: line-through grey;
 }

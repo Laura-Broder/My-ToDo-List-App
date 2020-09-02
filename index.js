@@ -1,14 +1,23 @@
 // select elements
 const saveBtn = document.querySelector(".save");
+const deleteAllBtn = document.querySelector(".deleteAll");
+const deleteCompletedBtn = document.querySelector(".deleteCompleted");
 const theList = document.querySelector(".theList");
 // ----------------------------------------------------------------
 // data list
 // retrieve and display all the saved tasks
-const tasksArray = retrieveLocalStorage();
-tasksArray.forEach((taskObj) => {
-  displayTask(taskObj);
-});
+let tasksArray = [];
+tasksArray = retrieveLocalStorage();
+displayFromLocalStorage();
+
 // ----------------------------------------------------------------
+// display from local storage
+function displayFromLocalStorage() {
+  tasksArray.forEach((taskObj) => {
+    displayTask(taskObj);
+  });
+  clearNewTaskQuery();
+}
 // retrieve local storage
 function retrieveLocalStorage() {
   let savedTasksArray = [];
@@ -19,7 +28,7 @@ function retrieveLocalStorage() {
 // update local storage
 function updateLocalStorage(taskObj) {
   if (typeof Storage !== "undefined") {
-    localStorage.setItem(JSON.stringify(taskObj.taskID), "");
+    // localStorage.setItem(JSON.stringify(taskObj.taskID), "");
     localStorage.setItem(
       JSON.stringify(taskObj.taskID),
       JSON.stringify(taskObj),
@@ -58,6 +67,7 @@ function createNewTask() {
   tasksArray.push(taskObj);
   updateLocalStorage(taskObj);
   displayTask(taskObj);
+  clearNewTaskQuery();
 }
 // update the task obj
 function updateTaskObj(taskEl) {
@@ -68,7 +78,9 @@ function updateTaskObj(taskEl) {
 }
 // delete a task
 function deleteTask(taskObj) {
-  taskObjIndex = tasksArray.findIndex((task) => task.taskID === taskObj.taskID);
+  let taskObjIndex = tasksArray.findIndex(
+    (task) => task.taskID === taskObj.taskID,
+  );
   tasksArray.splice(taskObjIndex, 1);
 
   deleteFromLocalStorage(taskObj);
@@ -87,6 +99,11 @@ function returnTaskObjIndex(taskEl) {
 }
 
 // ----------------------------------------------------------------
+// clear new task field
+function clearNewTaskQuery() {
+  document.querySelector("#newTaskField").value = "";
+}
+
 // display edit task field
 function displayEditTask(taskEl) {
   taskEl.querySelector(".saveChangesBtn").hidden = false;
@@ -99,6 +116,7 @@ function displayEditTask(taskEl) {
 function displayTask(taskObj) {
   const task = document.createElement("div");
   task.classList.add("task");
+  task.setAttribute("data-completed", taskObj.completed);
   task.setAttribute("data-id", taskObj.taskID);
 
   const taskContent = document.createElement("p");
@@ -111,8 +129,8 @@ function displayTask(taskObj) {
   editField.value = taskObj.content;
   editField.hidden = true;
 
-  // const buttonsContainer = document.createElement("div");
-  // buttonsContainer.classList.add("buttonsContainer");
+  const buttonsContainer = document.createElement("div");
+  buttonsContainer.classList.add("buttonsContainer");
 
   const deleteBtn = createBtn("deleteBtn", "Delete");
   const completeBtn = createBtn("completeBtn", "Complete");
@@ -122,11 +140,15 @@ function displayTask(taskObj) {
 
   task.appendChild(taskContent);
   task.appendChild(editField);
-  task.appendChild(deleteBtn);
-  task.appendChild(editBtn);
-  task.appendChild(completeBtn);
-  task.appendChild(saveChangesBtn);
-  theList.appendChild(task);
+  task.appendChild(buttonsContainer);
+
+  buttonsContainer.appendChild(deleteBtn);
+  buttonsContainer.appendChild(editBtn);
+  buttonsContainer.appendChild(completeBtn);
+  buttonsContainer.appendChild(saveChangesBtn);
+
+  // theList.appendChild(task);
+  theList.firstElementChild.insertAdjacentElement("afterend", task);
 
   // event listeners
   deleteBtn.addEventListener("click", handleDeleteClick);
@@ -154,36 +176,63 @@ function updateTaskElement(taskEl, taskObj) {
 // ----------------------------------------------------------------
 // handle clicks
 function handleDeleteClick(event) {
-  const taskEl = event.currentTarget.parentElement;
+  const taskEl = event.currentTarget.parentElement.parentElement;
   const taskObj = returnTaskObj(taskEl);
   deleteTask(taskObj);
   taskEl.remove();
 }
 function handleCompleteClick(event) {
-  const taskEl = event.currentTarget.parentElement;
+  const taskEl = event.currentTarget.parentElement.parentElement;
   const taskObjIndex = returnTaskObjIndex(taskEl);
   // !- bug! doesn't save the completed info
   if (!tasksArray[taskObjIndex].completed) {
-    taskEl.classList.add("complete");
+    taskEl.setAttribute("data-completed", true);
     tasksArray[taskObjIndex].completed = true;
+    updateLocalStorage(tasksArray[taskObjIndex]);
   } else {
-    taskEl.classList.remove("complete");
+    taskEl.setAttribute("data-completed", false);
     tasksArray[taskObjIndex].completed = false;
   }
+  updateLocalStorage(tasksArray[taskObjIndex]);
 }
 function handleEditClick(event) {
-  const taskEl = event.currentTarget.parentElement;
+  const taskEl = event.currentTarget.parentElement.parentElement;
   displayEditTask(taskEl);
 }
 function handleSaveChangesClick(event) {
-  const taskEl = event.currentTarget.parentElement;
+  const taskEl = event.currentTarget.parentElement.parentElement;
   const taskObj = updateTaskObj(taskEl);
   updateLocalStorage(taskObj);
   updateTaskElement(taskEl, taskObj);
 }
+function handleDeleteAllClick() {
+  // delete all tasks elements
+  document.querySelectorAll(".task").forEach((taskEl) => taskEl.remove());
+  // delete all array objects
+  tasksArray = [];
+  // delete all the local storage
+  clearLocalStorage();
+}
+function handleDeleteCompletedBtnClick() {
+  // delete completed tasks elements
+  document
+    .querySelectorAll("[data-completed=true]")
+    .forEach((taskEl) => taskEl.remove());
+  // delete completed from the local storage
+  tasksArray.forEach((taskObj) => {
+    if (taskObj.completed === true) {
+      deleteFromLocalStorage(taskObj);
+    }
+  });
+  // update array from local storage
+  tasksArray = retrieveLocalStorage();
+}
 
 // add eventListener to save btn
 saveBtn.addEventListener("click", createNewTask);
+
 // add events to the buttons:
 // deleteAll
+deleteAllBtn.addEventListener("click", handleDeleteAllClick);
 // Delete Completed Tasks
+deleteCompletedBtn.addEventListener("click", handleDeleteCompletedBtnClick);
